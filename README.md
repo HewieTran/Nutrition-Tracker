@@ -1,4 +1,4 @@
-# Nutrition-Count
+# Nutrition-Tracker
 version 1.0 App has 1 input field and 4 column to display data.
 
 a) Input field: App uses Nutrionix API which provides common food data for users to look up.
