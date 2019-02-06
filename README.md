@@ -12,3 +12,5 @@ d) 3rd Column - Selected List: List of foods that users added from the 2nd Colum
 e) 4th Column - total count of nutrients: Nutrtion countof all foods from 3rd Column.
 
 Technology used: HTML, CSS, JavaScript ES6, Nutrionix API.
+
+/
