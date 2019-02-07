@@ -1,14 +1,19 @@
 {
-  "name": "nutritioncount",
+  "name": "nutrition-tracker",
   "version": "1.0.0",
-  "description": "keeping track of nutrients",
+  "description": "track your daily nutrition intake",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HewieTran/Nutrition-Tracker.git"
+  },
   "author": "Hieu Tran",
   "license": "ISC",
-  "dependencies": {
-    "axios": "^0.18.0"
-  }
+  "bugs": {
+    "url": "https://github.com/HewieTran/Nutrition-Tracker/issues"
+  },
+  "homepage": "https://github.com/HewieTran/Nutrition-Tracker#readme"
 }
