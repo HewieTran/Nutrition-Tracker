@@ -11,6 +11,13 @@ const foodFiber = document.querySelector('#fiber');
 const changeServing = document.querySelector('#changeServing');
 
 const addToList = document.querySelector('.addToList');
+const listAdded = document.querySelector('.list_Added');
+
+const totalCalories = document.querySelector('.totalCalories');
+const totalProtein = document.querySelector('.totalProtein');
+const totalCarbs = document.querySelector('.totalCarbs');
+const totalFat = document.querySelector('.totalFat');
+const totalFiber = document.querySelector('.totalFiber');
 // const selectedList = document.querySelector('.')
 
 // const input = '';
@@ -19,7 +26,7 @@ const state = {};
 
 // Class of food
 class Food {
-	constructor(foodName, servingGrams, calories, protein, carbs, fat, fiber) {
+	constructor(foodName, servingGrams, calories, protein, carbs, fat, fiber, ID) {
 		this.foodName = foodName;
 		this.servingGrams = servingGrams;
 		this.calories = calories;
@@ -27,6 +34,7 @@ class Food {
 		this.carbs   = carbs;
 		this.fat     = fat;
 		this.fiber   = fiber;
+		this.ID = ID;
 	}
 	
 	async getNutritionData() {
@@ -61,6 +69,13 @@ class Food {
 			})
 		}
 };
+
+// class Total {
+// 	constructor(caloriesTotal, proteinTotal, carbsTotal, fatTotal, fiberTotal) {
+// 		this.caloriesTotal = caloriesTotal;
+
+// 	}
+// }
 ///////////////////////////////////////////////////
 
 searchBar.addEventListener('keydown', event => {
@@ -156,7 +171,7 @@ searchBar.addEventListener('keydown', event => {
 // });
 
 // TESTING
-///////////
+/////////
 // INPUT FIELD & 1ST COLUMN - Display search results
 window.addEventListener('load', () => {
 	const input = 'chicken';
@@ -213,8 +228,7 @@ window.addEventListener('load', () => {
 searchResults.addEventListener('click', async e => {
 	
 	if (e.target && e.target.matches('TD')) {
-		var foodName = '';
-		foodName = e.target.id;
+		var foodName = e.target.id;
 		// console.log(foodName);
 	}
 
@@ -237,6 +251,153 @@ searchResults.addEventListener('click', async e => {
 	oldFoodCarbs = parseFloat(foodCarbs.innerHTML);
 	oldFoodFat = parseFloat(foodFat.innerHTML);
 	oldFoodFiber = parseFloat(foodFiber.innerHTML);
+
+});
+
+
+// 2ND COLUMN - change nutrition value base on serving size
+changeServing.addEventListener('click', () => {
+
+	newServingSize = parseFloat(foodServingSize.value);
+
+	// Check if input is valid
+	if (newServingSize !== 0 && newServingSize > 0) {
+		
+		// Calculate new nutrition with new Serving Size
+		const newCalories = calcNewData(oldFoodCalorie,oldServingSize, newServingSize);
+		const newProtein = calcNewData(oldFoodProtein,oldServingSize, newServingSize);
+		const newCarbs   = calcNewData(oldFoodCarbs,oldServingSize, newServingSize);
+		const newFat     = calcNewData(oldFoodFat,oldServingSize, newServingSize);
+		const newFiber   = calcNewData(oldFoodFiber,oldServingSize, newServingSize);
+
+		console.log(newCalories, newProtein, newCarbs, newFat, newFiber);
+
+		// Display new nutrition value in UI
+		foodCalorie.innerHTML = newCalories;
+		foodProtein.innerHTML = newProtein;
+		foodCarbs.innerHTML   = newCarbs;
+		foodFat.innerHTML     = newFat;
+		foodFiber.innerHTML   = newFiber;
+
+		// Delete old serving nutrition value
+		delete state.currentFood;
+
+		state.currentFood = new Food();
+
+		state.currentFood.foodName = selectedFoodName.innerHTML.toLowerCase();
+		state.currentFood.servingGrams = newServingSize;
+		state.currentFood.calories = newCalories;
+		state.currentFood.protein = newProtein;
+		state.currentFood.carbs = newCarbs;
+		state.currentFood.fat = newFat;
+		state.currentFood.fiber = newFiber;
+			
+	} else {
+		alert('Please select a food or enter the correct number')
+	}
+});
+
+
+// 2ND COLUMN - Add Select Food to List
+// declare array to store selected food
+const listOfSelected = [];
+let item;
+// let caloriesTotal = 0, proteinTotal = 0, carbsTotal = 0, fatTotal= 0, fiberTotal=0;
+// assign id to html element
+var idNum = 0;
+
+addToList.addEventListener('click', () => {
+	// store foo
+	item = state.currentFood;
+
+
+	// Push item into selected List
+	listOfSelected.push(item);
+	console.log(listOfSelected);
+
+	// Display Food in 3rd Column
+	const listAddedMarkup = 
+	`<tr class="food_In_list">
+	    <td>${item.foodName}</td>     
+	    <td class="servingSize_food_In_List">${item.servingGrams}</td>
+	    <td>gram(s)</td>        
+	    <td class="remove_Btn" id="${idNum}"> x </td> 
+	  </tr>
+	`;
+
+	listAdded.insertAdjacentHTML('beforeend', listAddedMarkup);
+
+	// increment id after each added item
+	idNum++;
+
+	// 4TH COLUMN
+	let caloriesTotal = 0, proteinTotal = 0, carbsTotal = 0, fatTotal= 0, fiberTotal=0;
+	listOfSelected.forEach( e => {
+		// [food1, food2, food3]
+		// 
+		caloriesTotal = caloriesTotal + e.calories;
+		proteinTotal = proteinTotal + e.protein;
+		carbsTotal = carbsTotal + e.carbs;
+		fatTotal = fatTotal + e.fat;
+		fiberTotal = fiberTotal + e.fiber;
+	})
+
+	totalCalories.innerHTML = parseFloat(caloriesTotal).toFixed(2);
+	totalProtein.innerHTML = parseFloat(proteinTotal).toFixed(2);
+	totalCarbs.innerHTML = parseFloat(carbsTotal).toFixed(2);
+	totalFat.innerHTML = parseFloat(fatTotal).toFixed(2);
+	totalFiber.innerHTML = parseFloat(fiberTotal).toFixed(2);
+	
+});
+
+// 3RD COLUMN - Delete a food item
+listAdded.addEventListener('click', e => {
+	if (e.target && e.target.matches('.remove_Btn')) {
+		// return ID from html element
+		let id = parseInt(e.target.id);
+		console.log(id);
+		console.log(listOfSelected[id]);
+
+		// remove food from UI
+		const node = document.getElementById(`${id}`);
+		const nodeParent = node.parentElement;
+		while (nodeParent.firstChild) {
+			nodeParent.removeChild(nodeParent.firstChild);
+		};
+		
+		// delete item in listOfSelected
+		delete listOfSelected[id];
+
+		caloriesTotal = 0, proteinTotal = 0, carbsTotal = 0, fatTotal= 0, fiberTotal=0;
+
+		// Update nutrition total 
+		listOfSelected.forEach( e => {
+		// [food1, food2, food3]
+		// 
+			caloriesTotal = caloriesTotal + e.calories;
+			proteinTotal = proteinTotal + e.protein;
+			carbsTotal = carbsTotal + e.carbs;
+			fatTotal = fatTotal + e.fat;
+			fiberTotal = fiberTotal + e.fiber;
+		})
+
+		totalCalories.innerHTML = caloriesTotal;
+		totalProtein.innerHTML = proteinTotal;
+		totalCarbs.innerHTML = carbsTotal;
+		totalFat.innerHTML = fatTotal;
+		totalFiber.innerHTML = fiberTotal;
+		// Iterate through listOfSelected again to count total nutrition data
+	}
+});
+
+
+
+// Calculate new nutrition value with new Serving Size
+function calcNewData(foodNutrition, oldServingNum, newServingNum) {
+	const newData = parseFloat((foodNutrition / oldServingNum) * newServingNum).toFixed(2);	
+	return parseFloat(newData);
+};
+
 
 /////OLD CODE///////
 	// var formData = new URLSearchParams()
@@ -290,86 +451,4 @@ searchResults.addEventListener('click', async e => {
 
 	// // state.foodBeforeList = new Food(foodNameInList, oldServingSize, oldFoodCalorie, oldFoodProtein, oldFoodCarbs, oldFoodFat, oldFoodFiber);
 	// console.log(state.foodBeforeList);	
-});
-
-
-// 2ND COLUMN - change nutrition value base on serving size
-changeServing.addEventListener('click', () => {
-
-	newServingSize = parseFloat(foodServingSize.value);
-
-	// Check if input is valid
-	if (newServingSize !== 0 && newServingSize > 0) {
-		
-		// Calculate new nutrition with new Serving Size
-		const newCalories = calcNewData(oldFoodCalorie,oldServingSize, newServingSize);
-		const newProtein = calcNewData(oldFoodProtein,oldServingSize, newServingSize);
-		const newCarbs   = calcNewData(oldFoodCarbs,oldServingSize, newServingSize);
-		const newFat     = calcNewData(oldFoodFat,oldServingSize, newServingSize);
-		const newFiber   = calcNewData(oldFoodFiber,oldServingSize, newServingSize);
-
-		console.log(newCalories, newProtein, newCarbs, newFat, newFiber);
-
-		// Display new nutrition value in UI
-		foodCalorie.innerHTML = newCalories;
-		foodProtein.innerHTML = newProtein;
-		foodCarbs.innerHTML   = newCarbs;
-		foodFat.innerHTML     = newFat;
-		foodFiber.innerHTML   = newFiber;
-
-		// Delete old serving nutrition value
-		delete state.currentFood;
-
-		// this.foodName = foodName;
-		// this.servingGrams = servingGrams;
-		// this.calories = calories;
-		// this.protein = protein;
-		// this.carbs   = carbs;
-		// this.fat     = fat;
-		// this.fiber   = fiber;
-
-		state.currentFood = new Food();
-
-		state.currentFood.foodName = selectedFoodName.innerHTML;
-		state.currentFood.servingGrams = newServingSize;
-		state.currentFood.calories = newCalories;
-		state.currentFood.protein = newProtein;
-		state.currentFood.carbs = newCarbs;
-		state.currentFood.fat = newFat;
-		state.currentFood.fiber = newFiber;
-			
-	} else {
-		alert('Please select a food or enter the correct number')
-	}
-});
-
-// 2ND COLUMN - Add Select Food to List
-// declare array for liste
-const listOfSelected = [];
-
-addToList.addEventListener('click', () => {
-	// decare item as state
-	let item = state.currentFood;
-
-	// Push item into selected List
-	listOfSelected.push(item);
-	console.log(listOfSelected);
-
-	// Display Food in 3rd Column
-	listOfSelected.forEach( e => {
-
-	})
-
-});
-
-
-
-// Calculate new nutrition value with new Serving Size
-function calcNewData(foodNutrition, oldServingNum, newServingNum) {
-	const newData = parseFloat((foodNutrition / oldServingNum) * newServingNum).toFixed(2);	
-	return parseFloat(newData);
-};
-
-
-
 
