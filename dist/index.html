@@ -4,33 +4,43 @@
 	<title>	Nutrition Count</title>
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Merriweather|Raleway:400,500" rel="stylesheet">
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 </head>
 <body>
 
-
+<div class="page">
 
 <div class="container-fluid">
 		<div id="input">
 			<div>
 				<h3>
-					<input type="text" name="foodData" class="search"> <button>Add</button>
+					<input type="text" name="foodData" class="search"> <button type="button" class="btn btn-primary">Add</button>
 				</h3>
 			</div>
 		</div>	
+	
+		<div class="error_Result_Message">
+			<!-- <div class="alert alert-danger container-fluid" role="alert">
+					
+			</div> -->
+		</div>
 
-	<div>
+
+	<div class="table-responsive">
+
+
 		<!-- 1st TABLE -->
-		<div class="col-md-3 tables" class="table-responsive">
+		<div class="col-md-3 tables" >
 			<table  id="foodName" class="table table-hover" >
 				<thead class="thead-dark">
 					<tr>
-				    	<th scope="col">SEARCH RESULT</th>
+				    	<th scope="col" class="header">SEARCH RESULT</th>
 				  	</tr>
 				</thead>
 
 			<!-- table body -->
-				<tbody class="searchResults">
+				<tbody class="search_Results">
 <!-- 				<tr> <td scope="row">Chicken Breast</td> </tr>
 				  	<tr> <td scope="row">Chicken Thigh</td> </tr> -->
 				</tbody>			
@@ -39,13 +49,14 @@
 
 
 		<!-- 2nd Table -->
-		<div class="col-md-3 tables" class="table-responsive">
+		<div class="col-md-3 tables" >
+			<div class="table-responsive-xl">
 			<table  id="selectedFood" class="table table-hover" >
 
 			<!-- table head	 -->
 			<thead class="thead-dark">
 			  	<tr>
-			    	<th scope="col" colspan="4" id="selectedFoodName">SELECTED FOOD</th>
+			    	<th scope="col" colspan="4" id="selected_Food_Name" class="header">SELECTED FOOD</th>
 			  	</tr>
 			</thead>  
 
@@ -55,7 +66,7 @@
 				    <td scope="row">Serving Size</td>       
 				    <td><input type="number" value="0" name="amount" placeholder="0" id="servingSize"></td> 
 				    <td>gram(s)</td>
-				    <td><button id="changeServing">v</button></td>
+				    <td><button id="change_Serving" type="button" class="btn btn-warning">v</button></td>
 				</tr>
 				<tr>
 				    <td>Calories</td>           
@@ -89,22 +100,23 @@
 				</tr>
 				<th>
 				  	<td  colspan="4">
-				  		<button class="addToList">Add to list</button>
+				  		<button id="add_To_List" >Add to list</button>
 				  	</td>
 				</th>
 			</tbody>
 
-
 			</table>
+			</div>
 		</div>
 
 
 		<!-- 3rd TABLE -->
-		<div class="col-md-3 tables" class="table-responsive">
+		<div class="col-md-3 tables">
+			<div class="table-responsive-xl">
 			<table  id="selectedList" class="table table-hover" >
 				<thead class="thead-dark">
 				  	<tr>
-				   		 <th colspan="4">SELECTED LIST</th>      
+				   		 <th colspan="4" class="header">SELECTED LIST</th>      
 				 	</tr>
 				</thead>  
 
@@ -120,15 +132,16 @@
 				  </tr> -->
 				</tbody>
 			</table>
+			</div>
 		</div>
 
 
 		<!-- 4th TABLE -->
-		<div class="col-md-3 tables" class="table-responsive">
+		<div class="col-md-3 tables">
 			<table  id="total" class="table table-hover" >
 				<thead class="thead-dark">
 				  <tr>
-				    <th colspan="3">TOTAL COUNT</th>
+				    <th colspan="3" class="header">TOTAL COUNT</th>
 				  </tr>
 				</thead>  
 				
@@ -136,27 +149,27 @@
 				<tbody class="total_Count">
 				   <tr>
 				    <td>Calories</td>           
-				    <td class="totalCalories">0</td>
+				    <td class="total_Calories">0</td>
 				    <td>Calorie(s)</td>
 				  </tr>
 				  <tr>
 				    <td>Protein</td>            
-				    <td class="totalProtein"> 0 </td>
+				    <td class="total_Protein"> 0 </td>
 				    <td>gram(s)</td>
 				  </tr>  
 				  <tr>
 				    <td>Carbs</td>              
-				    <td class="totalCarbs"> 0</td>
+				    <td class="total_Carbs"> 0</td>
 				    <td>gram(s)</td>
 				  </tr>  
 				  <tr>
 				    <td>Fat</td>                
-				    <td class="totalFat"> 0 </td>
+				    <td class="total_Fat"> 0 </td>
 				    <td>gram(s)</td>
 				  </tr>  
 				  <tr>
 				    <td>Fiber</td>              
-				    <td class="totalFiber"> 0</td>
+				    <td class="total_Fiber"> 0</td>
 				    <td>gram(s)</td>
 				  </tr>
 				</tbody>
@@ -167,6 +180,6 @@
 </div>
 
 <script type="text/javascript" src="index.js"></script>
-
+</div>
 </body>
 </html>
