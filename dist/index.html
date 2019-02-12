@@ -5,38 +5,48 @@
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 	<link href="https://fonts.googleapis.com/css?family=Merriweather|Raleway:400,500" rel="stylesheet">
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 </head>
 <body>
 
-<div class="page">
-
-<div class="container-fluid">
-		<div id="input">
-			<div>
-				<h3>
-					<input type="text" name="foodData" class="search"> <button type="button" class="btn btn-primary">Add</button>
-				</h3>
+		<div class="jumbotron jumbotron-fluid" style="padding-top: 50px; padding-bottom:50px">
+				<div class="container">
+					<h1 class="display-4">Nutrition Tracker</h1>
+						<div id="" class="input-group mb-3">
+								<div class="input-group mb-3" id="input">
+									<input type="text" class="search form-control" placeholder="Search for your food..." aria-label="Recipient's username" aria-describedby="basic-addon2">
+									<div class="input-group-append">
+										<button class="btn btn-outline-secondary" type="button">Add</button>
+									</div>
+								</div>
+						</div>
+				</div>
+				<div class="error_Result_Message">
+						<!-- <div class="alert alert-danger container-fluid" role="alert">
+								
+						</div> -->
+					</div>
 			</div>
-		</div>	
-	
-		<div class="error_Result_Message">
-			<!-- <div class="alert alert-danger container-fluid" role="alert">
-					
-			</div> -->
-		</div>
 
 
-	<div class="table-responsive">
+
+
+
+
+	<div class="error_Result_Message">
+		<!-- <div class="alert alert-danger container-fluid" role="alert">
+				
+		</div> -->
+	</div>
+
 
 
 		<!-- 1st TABLE -->
-		<div class="col-md-3 tables" >
-			<table  id="foodName" class="table table-hover" >
-				<thead class="thead-dark">
+		<div class="col-md-3 tables">
+			<table  id="foodName" class="table" >
+				<thead class=" table-borderless">
 					<tr>
 				    	<th scope="col" class="header">SEARCH RESULT</th>
-				  	</tr>
+				  </tr>
 				</thead>
 
 			<!-- table body -->
@@ -51,10 +61,10 @@
 		<!-- 2nd Table -->
 		<div class="col-md-3 tables" >
 			<div class="table-responsive-xl">
-			<table  id="selectedFood" class="table table-hover" >
+			<table  id="selectedFood" class="table" >
 
 			<!-- table head	 -->
-			<thead class="thead-dark">
+			<thead class=" table-borderless">
 			  	<tr>
 			    	<th scope="col" colspan="4" id="selected_Food_Name" class="header">SELECTED FOOD</th>
 			  	</tr>
@@ -74,13 +84,13 @@
 				    <td>calorie(s)</td>
 				    <td></td>
 				</tr>
-			  	<tr>
+				<tr>
 				    <td>Protein</td>            
 				    <td id="protein">0</td> 
 				    <td>gram(s)</td>
 				    <td></td>
-			  	</tr>  
-			  	<tr>
+				</tr>  
+				<tr>
 				    <td>Carbs</td>              
 				    <td id="carbs"> 0 </td> 
 				    <td>gram(s)</td>
@@ -98,11 +108,11 @@
 				    <td>gram(s)</td>
 				    <td></td>
 				</tr>
-				<th>
+				<tr>
 				  	<td  colspan="4">
-				  		<button id="add_To_List" >Add to list</button>
+				  		<button id="add_To_List" class="btn btn-primary">Add to list</button>
 				  	</td>
-				</th>
+				</tr>
 			</tbody>
 
 			</table>
@@ -113,8 +123,8 @@
 		<!-- 3rd TABLE -->
 		<div class="col-md-3 tables">
 			<div class="table-responsive-xl">
-			<table  id="selectedList" class="table table-hover" >
-				<thead class="thead-dark">
+			<table  id="selectedList" class="table" >
+				<thead class=" table-borderless">
 				  	<tr>
 				   		 <th colspan="4" class="header">SELECTED LIST</th>      
 				 	</tr>
@@ -138,8 +148,8 @@
 
 		<!-- 4th TABLE -->
 		<div class="col-md-3 tables">
-			<table  id="total" class="table table-hover" >
-				<thead class="thead-dark">
+			<table  id="total" class="table" >
+				<thead class=" table-borderless">
 				  <tr>
 				    <th colspan="3" class="header">TOTAL COUNT</th>
 				  </tr>
@@ -176,10 +186,9 @@
 
 			</table>
 		</div>
-	</div>
-</div>
-
+	
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 <script type="text/javascript" src="index.js"></script>
-</div>
+
 </body>
 </html>

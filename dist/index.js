@@ -224,20 +224,31 @@ addToList.addEventListener('click', () => {
 	console.log(listOfSelected);
 
 	// Display Food in 3rd Column
-	const listAddedMarkup = 
-	`<tr class="food_In_list">
-	    <td>${item.foodName}</td>     
-	    <td class="servingSize_food_In_List">${item.servingGrams}</td>
-	    <td>gram(s)</td>        
-			<td> 
-				<button type="button" class="close" aria-label="Close">
-					<span aria-hidden="true" class="remove_Btn" id="${idNum}">&times;</span>
-				</button>
-			</td> 
-	</tr>`;
+	// if(item.foodName == null ) {
+	// 	const markup = `
+	// 	<div class="alert_css col-md-6"> 
+	// 		<div class="alert alert-info container-fluid" role="alert">
+	// 			There's nothing to add silly.
+	// 		</div>
+	// 	</div>
+	// 	`;
+	// 	errorResultMsg.insertAdjacentHTML('beforeend', markup);
+	// } else {
 
-	listAdded.insertAdjacentHTML('beforeend', listAddedMarkup);
-
+		const listAddedMarkup = 
+		`<tr class="food_In_list">
+				<td>${item.foodName}</td>     
+				<td class="servingSize_food_In_List">${item.servingGrams}</td>
+				<td>gram(s)</td>        
+				<td> 
+					<button type="button" class="close" aria-label="Close">
+						<span aria-hidden="true" class="remove_Btn" id="${idNum}">&times;</span>
+					</button>
+				</td> 
+		</tr>`;
+	
+		listAdded.insertAdjacentHTML('beforeend', listAddedMarkup);
+	// }
 	// increment id after each added item
 	idNum++;
 
@@ -319,18 +330,20 @@ function displaySearchResults(query) {
 		state.search.commonResult.forEach( commonData => {
 			// Markup for SEARCH RESULT
 			const searchResultsMarkUp = `
-			<tr>
+			<tr class="pointer">
 				<td scope="row" id="${commonData.food_name}">${commonData.food_name}</td>
-				</tr>
-		`;
+			</tr>
+			`;
 
 		// display food name in UI
 		searchResults.insertAdjacentHTML('beforeend', searchResultsMarkUp);
 		})
 	} else { 
 		const markup = `
-		<div class="alert alert-danger container-fluid" role="alert">
-			Uh oh, we got no results from <b>${query}</b>, please try another search.
+		<div class="alert_css col-md-6"> 
+			<div class="alert alert-danger container-fluid" role="alert">
+				Uh oh, we got no results from <b>${query}</b>, please try another search.
+			</div>
 		</div>
 		`;
 		errorResultMsg.insertAdjacentHTML('beforeend', markup);
