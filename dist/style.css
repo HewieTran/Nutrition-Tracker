@@ -4,11 +4,11 @@
   overflow: auto;
 } */
 
-html {
-  background-image: url(background_image_2.jpg) ;
+html, body .page {
+  background-image: url(img/background_image_2.jpg) ;
   background-size: cover;
   background-color: rgb(19, 114, 177);
-}
+} 
 
 
 
@@ -60,6 +60,10 @@ body, body * {
   margin: 0 auto;
 }
 
+.alert {
+  margin-bottom: none;
+}
+
 tr:hover td {
   background-color: rgb(209, 209, 209)
 }
@@ -85,4 +89,24 @@ th {
 
 .table thead>tr>th {
   border:none;
+}
+
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid rgba(53, 48, 48, 0.972);
+  width: 200px;
+}
+
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  /* background-color: red;
+  color: white; */
+  text-align: center;
+  clear: left;
+  /*color: white;*/
 }
