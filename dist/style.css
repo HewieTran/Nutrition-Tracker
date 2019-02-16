@@ -4,10 +4,12 @@
   overflow: auto;
 } */
 
-html, body .page {
+html, .page {
   background-image: url(img/background_image_2.jpg) ;
   background-size: cover;
   background-color: rgb(19, 114, 177);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 } 
 
 
@@ -104,9 +106,9 @@ hr {
   left: 0;
   bottom: 0;
   width: 100%;
-  /* background-color: red;
-  color: white; */
   text-align: center;
-  clear: left;
-  /*color: white;*/
+  /* clear: left; */
+  height: 100px;
 }
+
+.clear { clear:both; }

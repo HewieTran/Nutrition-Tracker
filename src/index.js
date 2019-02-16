@@ -302,11 +302,11 @@ listAdded.addEventListener('click', e => {
 			fiberTotal = fiberTotal + e.fiber;
 		})
 
-		totalCalories.innerHTML = caloriesTotal;
-		totalProtein.innerHTML = proteinTotal;
-		totalCarbs.innerHTML = carbsTotal;
-		totalFat.innerHTML = fatTotal;
-		totalFiber.innerHTML = fiberTotal;
+		totalCalories.innerHTML = parseFloat(caloriesTotal).toFixed(2);
+		totalProtein.innerHTML = parseFloat(proteinTotal).toFixed(2);
+		totalCarbs.innerHTML = parseFloat(carbsTotal).toFixed(2);
+		totalFat.innerHTML = parseFloat(fatTotal).toFixed(2);
+		totalFiber.innerHTML = parseFloat(fiberTotal).toFixed(2);
 		// Iterate through listOfSelected again to count total nutrition data
 	}
 });
