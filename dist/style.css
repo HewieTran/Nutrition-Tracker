@@ -24,7 +24,10 @@ html, .page {
 
 .tables {
   float: left;
+  
+
 }
+
 
 td {
   background-color: white;
@@ -111,4 +114,15 @@ hr {
   height: 100px;
 }
 
-.clear { clear:both; }
+.clear { 
+  clear:both; 
+  text-align: center;
+  bottom: 0px;
+  position: relative;
+
+}
+
+.col-centered{
+    /*float: none;*/
+    margin: 0 auto;
+}
