@@ -21,9 +21,12 @@ const totalCarbs = document.querySelector('.total_Carbs');
 const totalFat = document.querySelector('.total_Fat');
 const totalFiber = document.querySelector('.total_Fiber');
 
+const placeholderText = document.querySelector('#placeholder_Text')
+
 
 // State to store Food and Search Model
 const state = {};
+let query = '';
 
 // CLASSES
 class Food {
@@ -107,12 +110,17 @@ searchBar.addEventListener('keydown', async event => {
 			errorResultMsg.removeChild(errorResultMsg.firstChild);
 		};
 
-		const query = searchBar.value;
+		query = searchBar.value;
 		state.search = new Search(query);
 		await state.search.getResults()
 		
-		displaySearchResults(query);		
+		if(state.search.commonResult.length !== 0) {
+			changePage(1);
+		} else {
+			renderError();
+		}			
 	}
+
 });
 
 add.addEventListener('click', async () => {
@@ -122,11 +130,15 @@ add.addEventListener('click', async () => {
 			errorResultMsg.removeChild(errorResultMsg.firstChild);
 		};
 
-		const query = searchBar.value;
+		query = searchBar.value;
 		state.search = new Search(query);
 		await state.search.getResults()
 
-		displaySearchResults(query);
+		if(state.search.commonResult.length !== 0) {
+			changePage(1);
+		} else {
+			renderError();
+		}	
 
 });
 
@@ -224,34 +236,15 @@ addToList.addEventListener('click', () => {
 	console.log(listOfSelected);
 
 	// Display Food in 3rd Column
-	if (item === undefined ) {
-		const markup = `
-		<div class="alert_css col-md-6"> 
-			<div class="alert alert-info container-fluid" role="alert">
-				There's nothing to add silly. Search for a food first.
-			</div>
-		</div>`;
-
-		errorResultMsg.insertAdjacentHTML('beforeend', markup);
+	if (item === undefined) {
+		renderWarning();
 	} else {
-		const listAddedMarkup = 
-		`<tr class="food_In_list">
-				<td>${item.foodName}</td>     
-				<td class="servingSize_food_In_List">${item.servingGrams}</td>
-				<td>gram(s)</td>        
-				<td> 
-					<button type="button" class="close" aria-label="Close">
-						<span aria-hidden="true" class="remove_Btn" id="${idNum}">&times;</span>
-					</button>
-				</td> 
-		</tr>`;
-	
-		listAdded.insertAdjacentHTML('beforeend', listAddedMarkup);
+		renderToList();
 	}
 	// increment id after each added item
 	idNum++;
 
-	// 4TH COLUMN - COMPUTE TOTAL FOR NUTRITION DATA
+// 4TH COLUMN - COMPUTE TOTAL FOR NUTRITION DATA
 	let caloriesTotal = 0, proteinTotal = 0, carbsTotal = 0, fatTotal= 0, fiberTotal=0;
 	listOfSelected.forEach( e => {
 		// [food1, food2, food3]
@@ -321,35 +314,150 @@ function calcNewData(foodNutrition, oldServingNum, newServingNum) {
 };
 
 
-function displaySearchResults(query) {
-	// clear previous results
-	searchResults.innerHTML = '';
+// Pagination for table 1
+var current_Page = 1;
+var results_Per_Page = 8;
+
+btn_next.style.visibility = 'hidden';
+btn_prev.style.visibility = 'hidden';
+
+function prevPage()
+{
+    if (current_Page > 1) {
+        current_Page--;
+        changePage(current_Page);
+    }
+};
+
+function nextPage()
+{
+    if (current_Page < numPages()) {
+        current_Page++;
+        changePage(current_Page);
+    }
+};
+
+function changePage(page)
+{
+	placeholder_Text.innerHTML = '';
+    var btn_next = document.getElementById("btn_next");
+    var btn_prev = document.getElementById("btn_prev");
+    // var listing_table = document.getElementById("listingTable");
+    var page_span = document.getElementById("page");
+ 
+    // Validate page
+    if (page < 1) page = 1;
+	if (page > numPages()) page = numPages();
+	
 	const allResults = state.search.commonResult;
 
-	allPageNum = parseInt(allResults.length / 10);
+	searchResults.innerHTML = '';
 
-	if (allResults.length !== 0) {
-		const page1 = allResults.slice(0, allResults.length - 10);
-		page1.forEach( data => {
 
-			const searchResultsMarkUp = `
-			<tr class="pointer">
-				<td scope="row" id="${data.food_name}">${data.food_name}</td>
-			</tr>
-			`;
-			searchResults.insertAdjacentHTML('beforeend', searchResultsMarkUp);
-		})
-	} else {
-		const markup = `
-		<div class="alert_css col-md-6"> 
-			<div class="alert alert-danger container-fluid" role="alert">
-				Uh oh, we got no results from <b>${query}</b>, please try another search.
-			</div>
-		</div>
+	for(var i = (page -1) * results_Per_Page; i < page * results_Per_Page && i < allResults.length; i++) {
+		const searchResultsMarkUp = `
+		<tr class="pointer">
+			<td scope="row" id="${allResults[i].food_name}">${allResults[i].food_name}</td>
+		</tr>
 		`;
-		errorResultMsg.insertAdjacentHTML('beforeend', markup);
+		searchResults.insertAdjacentHTML('beforeend', searchResultsMarkUp);
+		
 	}
+	page_span.style.visibility = 'visible';
+	page_span.innerHTML = 'Page:' + page + '/' + numPages();
+
+	
+
+	btn_prev.style.visibility = page == 1 ? 'hidden' : 'visible';
+	btn_next.style.visibility = page == numPages() ? 'hidden' : 'visible';
 };
+
+function numPages()
+{
+    return Math.ceil(state.search.commonResult.length / results_Per_Page);
+};
+
+
+// Render error message if bad search query
+function renderError() {
+	const markup = `
+	<div class="alert_css col-md-6"> 
+		<div class="alert alert-danger container-fluid" role="alert">
+			Uh oh, we got no results from <b>${query}</b>, please try another search.
+		</div>
+	</div>
+	`;
+	errorResultMsg.insertAdjacentHTML('beforeend', markup);
+};
+
+// render warning message if Add to List is blank
+function renderWarning() {
+	const markup = `
+	<div class="alert_css col-md-6"> 
+		<div class="alert alert-info container-fluid" role="alert">
+			There's nothing to add silly. Search for a food first.
+		</div>
+	</div>`;
+
+	errorResultMsg.insertAdjacentHTML('beforeend', markup);
+};
+
+// render food in 2nd column to 3rd column
+function renderToList() {
+	const listAddedMarkup = 
+	`<tr class="food_In_list">
+		<td>${item.foodName}</td>     
+		<td class="servingSize_food_In_List">${item.servingGrams}</td>
+		<td>gram(s)</td>        
+		<td> 
+			<button type="button" class="close" aria-label="Close">
+				<span aria-hidden="true" class="remove_Btn" id="${idNum}">&times;</span>
+			</button>
+		</td> 
+	</tr>`;
+
+	listAdded.insertAdjacentHTML('beforeend', listAddedMarkup);
+};
+
+
+
+
+
+
+
+
+
+
+// function displaySearchResults(query) {
+// 	// clear previous results
+// 	searchResults.innerHTML = '';
+// 	const allResults = state.search.commonResult;
+
+// 	allPageNum = parseInt(allResults.length / 10);
+
+// 	if (allResults.length !== 0) {
+// 		const page1 = allResults.slice(0, allResults.length - 10);
+// 		page1.forEach( data => {
+
+// 			const searchResultsMarkUp = `
+// 			<tr class="pointer">
+// 				<td scope="row" id="${data.food_name}">${data.food_name}</td>
+// 			</tr>
+// 			`;
+// 			searchResults.insertAdjacentHTML('beforeend', searchResultsMarkUp);
+// 		})
+// 	} else {
+// 		const markup = `
+// 		<div class="alert_css col-md-6"> 
+// 			<div class="alert alert-danger container-fluid" role="alert">
+// 				Uh oh, we got no results from <b>${query}</b>, please try another search.
+// 			</div>
+// 		</div>
+// 		`;
+// 		errorResultMsg.insertAdjacentHTML('beforeend', markup);
+// 	}
+// };
+
 
 // Display search result or error message 
 // function displaySearchResults(query) {

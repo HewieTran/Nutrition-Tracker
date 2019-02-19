@@ -47,7 +47,7 @@ body, body * {
 }
 
 .input_Bar {
-  width: 55%;
+  width: 50%;
   margin: 50px auto;
   text-align: center;
   float: center; 
@@ -105,7 +105,7 @@ hr {
 }
 
 .footer {
-  position: absolute;
+  position: fixed;
   left: 0;
   bottom: 0;
   width: 100%;
@@ -126,3 +126,11 @@ hr {
     /*float: none;*/
     margin: 0 auto;
 }
+
+/* #servingSize {
+  width: 50%;
+} */
+
+#placeholder_Text {
+  text-align: center;
+};

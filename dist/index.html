@@ -61,6 +61,16 @@
 <!-- 						<tr>
 							<td><button> < </button><button> > </button></td>
 						</tr> -->
+				</tbody>
+				<tbody>
+						<tr>
+							<td>
+								<span id="placeholder_Text">Your search results will go here</span>
+								<a href="javascript:prevPage()" id="btn_prev">Prev</a>
+								<span id="page"></span> 
+								<a href="javascript:nextPage()" id="btn_next">Next</a>
+							</td>
+						</tr>
 				</tbody>			
 			</table>
 		</div>
@@ -81,14 +91,14 @@
 			<!-- table body -->	
 			<tbody>
 				<tr>
-				    <td scope="row">Serving Size</td>       
+				    <td width="30%">Serving Size</td>       
 				    <td><input class="form-control" type="number" value="0" name="amount" placeholder="0" id="servingSize"></td> 
 				    <td>gram(s)</td>
 				    <td><button id="change_Serving" type="button" class="btn btn-warning">v</button></td>
 				</tr>
 				<tr>
 				    <td>Calories</td>           
-				    <td  id="calorie">0</td> 
+				    <td id="calorie">0</td> 
 				    <td>calorie(s)</td>
 				    <td></td>
 				</tr>
