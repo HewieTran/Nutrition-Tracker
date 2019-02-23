@@ -1,4 +1,4 @@
-import {elements} from '../src/js/views/base';
+import elements from '../src/js/views/base';
 import Search from '../src/js/models/Search';
 import Food from '../src/js/models/Food';
 
