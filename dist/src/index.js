@@ -1,21 +1,116 @@
-import elements from '../src/js/views/base';
-import Search from '../src/js/models/Search';
-import Food from '../src/js/models/Food';
+const errorResultMsg = document.querySelector('.error_Result_Message');
+
+const add = document.querySelector('button');
+const searchBar = document.querySelector('.search');
+const searchResults = document.querySelector('.search_Results');
+const selectedFoodName = document.querySelector('#selected_Food_Name');
+const foodServingSize = document.querySelector('#servingSize');
+const foodCalorie = document.querySelector('#calorie');
+const foodProtein = document.querySelector('#protein');
+const foodCarbs = document.querySelector('#carbs');
+const foodFat = document.querySelector('#fat');
+const foodFiber = document.querySelector('#fiber');
+const changeServing = document.querySelector('#change_Serving');
+
+const addToList = document.querySelector('#add_To_List');
+const listAdded = document.querySelector('.list_Added');
+
+const totalCalories = document.querySelector('.total_Calories');
+const totalProtein = document.querySelector('.total_Protein');
+const totalCarbs = document.querySelector('.total_Carbs');
+const totalFat = document.querySelector('.total_Fat');
+const totalFiber = document.querySelector('.total_Fiber');
+
+const placeholderText = document.querySelector('#placeholder_Text')
+
 
 // State to store Food and Search Model
 const state = {};
 let query = '';
 
+// CLASSES
+class Food {
+	constructor(foodName, servingGrams, calories, protein, carbs, fat, fiber) {
+		this.foodName = foodName;
+		this.servingGrams = servingGrams;
+		this.calories = calories;
+		this.protein = protein;
+		this.carbs   = carbs;
+		this.fat     = fat;
+		this.fiber   = fiber;
+	}
+	
+	async getNutritionData() {
+		
+		var formData = new URLSearchParams()
+		formData.set('query', this.foodName)
+
+		const result = await fetch('https://trackapi.nutritionix.com/v2/natural/nutrients', {
+
+			method: 'POST',
+			headers: {
+				"x-app-id": "f11026c8", 
+				"x-app-key":"c18be052fccd97ed5f4b5197e27aaacd",
+				// 'Content-type': 'application/x-www-form-urlencoded',
+				// "x-remote-user-id": "0"
+			},
+			body: formData
+
+			})
+			.then(response => {
+				return response.json();
+			})
+			.then(results => {
+				const n = 0;
+
+				this.servingGrams = results.foods[n].serving_weight_grams;
+				this.calories = results.foods[n].nf_calories;
+				this.protein = results.foods[n].nf_protein;
+				this.carbs   = results.foods[n].nf_total_carbohydrate;
+				this.fat     = results.foods[n].nf_total_fat;
+				this.fiber   = results.foods[n].nf_dietary_fiber;
+			})
+		}
+};
+
+
+class Search {
+	constructor(query) {
+		this.query = query;
+	}
+	async getResults() {
+		const res = fetch(`https://trackapi.nutritionix.com/v2/search/instant?query=${this.query}`, {
+			method: 'GET',
+			headers: {
+			"x-app-id": "caa6104e", 
+			"x-app-key":"1ea40dd5c9234ee38ef32d4fc7e8c2b0"
+			// "x-remote-user-id ": "0"
+			// "Content-Type" : "application/json"
+			}
+		})
+		.then(response => {
+			return response.json();
+		})
+		.catch(error => console.log(error));
+
+		await res.then( result => {
+			this.commonResult = result.common;
+			return this.result;
+		})
+	}
+
+};
+
 
 // INPUT FIELD & 1ST COLUMN - Display search results
-elements.searchBar.addEventListener('keydown', async event => {
+searchBar.addEventListener('keydown', async event => {
 	if (event.keyCode === 13) {
 		// Clear existing error message
 		while(errorResultMsg.firstChild) {
 			errorResultMsg.removeChild(errorResultMsg.firstChild);
 		};
 
-		query = elements.searchBar.value;
+		query = searchBar.value;
 		state.search = new Search(query);
 		await state.search.getResults()
 		
@@ -28,14 +123,14 @@ elements.searchBar.addEventListener('keydown', async event => {
 
 });
 
-elements.add.addEventListener('click', async () => {
+add.addEventListener('click', async () => {
 
 		// Clear existing error message
 		while(errorResultMsg.firstChild) {
 			errorResultMsg.removeChild(errorResultMsg.firstChild);
 		};
 
-		query = elements.searchBar.value;
+		query = searchBar.value;
 		state.search = new Search(query);
 		await state.search.getResults()
 
@@ -48,8 +143,9 @@ elements.add.addEventListener('click', async () => {
 });
 
 
+
 // 1ST COLUMN - CHOOSE FOOD TO ADD TO SELECTED FOOD DISPLAY
-elements.searchResults.addEventListener('click', async e => {
+searchResults.addEventListener('click', async e => {
 	
 	if (e.target && e.target.matches('TD')) {
 		var foodName = e.target.id;
@@ -61,28 +157,28 @@ elements.searchResults.addEventListener('click', async e => {
 	await state.currentFood.getNutritionData();
 
 	// Display current nutrition value in UI
-	elements.selectedFoodName.innerHTML = foodName.toUpperCase();
-	elements.foodServingSize.value = state.currentFood.servingGrams;
-	elements.foodCalorie.innerHTML = state.currentFood.calories;
-	elements.foodProtein.innerHTML = state.currentFood.protein;
-	elements.foodCarbs.innerHTML   = state.currentFood.carbs;
-	elements.foodFat.innerHTML     = state.currentFood.fat;
-	elements.foodFiber.innerHTML   = state.currentFood.fiber;
+	selectedFoodName.innerHTML = foodName.toUpperCase();
+	foodServingSize.value = state.currentFood.servingGrams;
+	foodCalorie.innerHTML = state.currentFood.calories;
+	foodProtein.innerHTML = state.currentFood.protein;
+	foodCarbs.innerHTML   = state.currentFood.carbs;
+	foodFat.innerHTML     = state.currentFood.fat;
+	foodFiber.innerHTML   = state.currentFood.fiber;
 
-	oldServingSize = parseFloat(elements.foodServingSize.value);
-	oldFoodCalorie = parseFloat(elements.foodCalorie.innerHTML);
-	oldFoodProtein = parseFloat(elements.foodProtein.innerHTML);
-	oldFoodCarbs = parseFloat(elements.foodCarbs.innerHTML);
-	oldFoodFat = parseFloat(elements.foodFat.innerHTML);
-	oldFoodFiber = parseFloat(elements.foodFiber.innerHTML);
+	oldServingSize = parseFloat(foodServingSize.value);
+	oldFoodCalorie = parseFloat(foodCalorie.innerHTML);
+	oldFoodProtein = parseFloat(foodProtein.innerHTML);
+	oldFoodCarbs = parseFloat(foodCarbs.innerHTML);
+	oldFoodFat = parseFloat(foodFat.innerHTML);
+	oldFoodFiber = parseFloat(foodFiber.innerHTML);
 
 });
 
 
 // 2ND COLUMN - CHANGE NUTRITION VALUE BASE ON SERVING SIZE
-elements.changeServing.addEventListener('click', () => {
+changeServing.addEventListener('click', () => {
 
-	newServingSize = parseFloat(elements.foodServingSize.value);
+	newServingSize = parseFloat(foodServingSize.value);
 
 	// Check if input is valid
 	if (newServingSize !== 0 && newServingSize > 0) {
@@ -97,18 +193,18 @@ elements.changeServing.addEventListener('click', () => {
 		// console.log(newCalories, newProtein, newCarbs, newFat, newFiber);
 
 		// Display new nutrition value in UI
-		elements.foodCalorie.innerHTML = newCalories;
-		elements.foodProtein.innerHTML = newProtein;
-		elements.foodCarbs.innerHTML   = newCarbs;
-		elements.foodFat.innerHTML     = newFat;
-		elements.foodFiber.innerHTML   = newFiber;
+		foodCalorie.innerHTML = newCalories;
+		foodProtein.innerHTML = newProtein;
+		foodCarbs.innerHTML   = newCarbs;
+		foodFat.innerHTML     = newFat;
+		foodFiber.innerHTML   = newFiber;
 
 		// Delete old serving nutrition value
 		delete state.currentFood;
 
 		state.currentFood = new Food();
 
-		state.currentFood.foodName = elements.selectedFoodName.innerHTML.toLowerCase();
+		state.currentFood.foodName = selectedFoodName.innerHTML.toLowerCase();
 		state.currentFood.servingGrams = newServingSize;
 		state.currentFood.calories = newCalories;
 		state.currentFood.protein = newProtein;
@@ -131,7 +227,7 @@ let item;
 // Assign id to each food element in 3d column
 let idNum = 0;
 
-elements.addToList.addEventListener('click', () => {
+addToList.addEventListener('click', () => {
 	// Store currentFood selected
 	item = state.currentFood;
 
@@ -160,16 +256,16 @@ elements.addToList.addEventListener('click', () => {
 		fiberTotal = fiberTotal + e.fiber;
 	})
 
-	elements.totalCalories.innerHTML = parseFloat(caloriesTotal).toFixed(2);
-	elements.totalProtein.innerHTML = parseFloat(proteinTotal).toFixed(2);
-	elements.totalCarbs.innerHTML = parseFloat(carbsTotal).toFixed(2);
+	totalCalories.innerHTML = parseFloat(caloriesTotal).toFixed(2);
+	totalProtein.innerHTML = parseFloat(proteinTotal).toFixed(2);
+	totalCarbs.innerHTML = parseFloat(carbsTotal).toFixed(2);
 	totalFat.innerHTML = parseFloat(fatTotal).toFixed(2);
-	elements.totalFiber.innerHTML = parseFloat(fiberTotal).toFixed(2);
+	totalFiber.innerHTML = parseFloat(fiberTotal).toFixed(2);
 	
 });
 
 // 3RD COLUMN - DELETE FOOD FROM LIST
-elements.listAdded.addEventListener('click', e => {
+listAdded.addEventListener('click', e => {
 	if (e.target && e.target.matches('.remove_Btn')) {
 		// return ID from html element
 		let id = parseInt(e.target.id);
@@ -199,11 +295,11 @@ elements.listAdded.addEventListener('click', e => {
 			fiberTotal = fiberTotal + e.fiber;
 		})
 
-		elements.totalCalories.innerHTML = parseFloat(caloriesTotal).toFixed(2);
-		elements.totalProtein.innerHTML = parseFloat(proteinTotal).toFixed(2);
-		elements.totalCarbs.innerHTML = parseFloat(carbsTotal).toFixed(2);
+		totalCalories.innerHTML = parseFloat(caloriesTotal).toFixed(2);
+		totalProtein.innerHTML = parseFloat(proteinTotal).toFixed(2);
+		totalCarbs.innerHTML = parseFloat(carbsTotal).toFixed(2);
 		totalFat.innerHTML = parseFloat(fatTotal).toFixed(2);
-		elements.totalFiber.innerHTML = parseFloat(fiberTotal).toFixed(2);
+		totalFiber.innerHTML = parseFloat(fiberTotal).toFixed(2);
 		// Iterate through listOfSelected again to count total nutrition data
 	}
 });
@@ -243,7 +339,7 @@ function nextPage()
 
 function changePage(page)
 {
-	elements.placeholderText.innerHTML = '';
+	placeholder_Text.innerHTML = '';
     var btn_next = document.getElementById("btn_next");
     var btn_prev = document.getElementById("btn_prev");
     // var listing_table = document.getElementById("listingTable");
@@ -255,7 +351,7 @@ function changePage(page)
 	
 	const allResults = state.search.commonResult;
 
-	elements.searchResults.innerHTML = '';
+	searchResults.innerHTML = '';
 
 
 	for(var i = (page -1) * results_Per_Page; i < page * results_Per_Page && i < allResults.length; i++) {
@@ -264,7 +360,7 @@ function changePage(page)
 			<td scope="row" id="${allResults[i].food_name}">${allResults[i].food_name}</td>
 		</tr>
 		`;
-		elements.searchResults.insertAdjacentHTML('beforeend', searchResultsMarkUp);
+		searchResults.insertAdjacentHTML('beforeend', searchResultsMarkUp);
 		
 	}
 	page_span.style.visibility = 'visible';
@@ -320,6 +416,77 @@ function renderToList() {
 		</td> 
 	</tr>`;
 
-	elements.listAdded.insertAdjacentHTML('beforeend', listAddedMarkup);
+	listAdded.insertAdjacentHTML('beforeend', listAddedMarkup);
 };
 
+
+
+
+
+
+
+
+// OLD CODE
+
+// function displaySearchResults(query) {
+// 	// clear previous results
+// 	searchResults.innerHTML = '';
+// 	const allResults = state.search.commonResult;
+
+// 	allPageNum = parseInt(allResults.length / 10);
+
+// 	if (allResults.length !== 0) {
+// 		const page1 = allResults.slice(0, allResults.length - 10);
+// 		page1.forEach( data => {
+
+// 			const searchResultsMarkUp = `
+// 			<tr class="pointer">
+// 				<td scope="row" id="${data.food_name}">${data.food_name}</td>
+// 			</tr>
+// 			`;
+// 			searchResults.insertAdjacentHTML('beforeend', searchResultsMarkUp);
+// 		})
+// 	} else {
+// 		const markup = `
+// 		<div class="alert_css col-md-6"> 
+// 			<div class="alert alert-danger container-fluid" role="alert">
+// 				Uh oh, we got no results from <b>${query}</b>, please try another search.
+// 			</div>
+// 		</div>
+// 		`;
+// 		errorResultMsg.insertAdjacentHTML('beforeend', markup);
+// 	}
+// };
+
+
+// Display search result or error message 
+// function displaySearchResults(query) {
+// 	// Clear previous search results
+// 	searchResults.innerHTML = '';
+// 	const allResults = state.search.commonResult;
+
+// 	if (allResults.length !== 0) {
+
+		
+// 		state.search.commonResult.forEach( commonData => {
+// 			// Markup for SEARCH RESULT
+// 			const searchResultsMarkUp = `
+// 			<tr class="pointer">
+// 				<td scope="row" id="${commonData.food_name}">${commonData.food_name}</td>
+// 			</tr>
+// 			`;
+
+// 		// display food name in UI
+// 		searchResults.insertAdjacentHTML('beforeend', searchResultsMarkUp);
+// 		})
+// 	} else { 
+// 		const markup = `
+// 		<div class="alert_css col-md-6"> 
+// 			<div class="alert alert-danger container-fluid" role="alert">
+// 				Uh oh, we got no results from <b>${query}</b>, please try another search.
+// 			</div>
+// 		</div>
+// 		`;
+// 		errorResultMsg.insertAdjacentHTML('beforeend', markup);
+// 	}
+// };
