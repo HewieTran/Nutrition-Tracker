@@ -7,12 +7,14 @@
 html, .page {
   background-image: url(img/background_image_2.jpg) ;
   background-size: cover;
-  background-color: rgb(19, 114, 177);
+  background-color: rgb(114, 114, 114);
   background-repeat: no-repeat;
   background-attachment: fixed;
 } 
 
-
+img {
+  margin-left: 1em;
+}
 
 /* table {
   border: 0px solid white;
@@ -42,15 +44,12 @@ input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-i
   margin: 0;
 }
 
-body, body * {
-  font-family: 'Raleway', sans-serif;
+input > .search {
+  width: 100%;
 }
 
-.input_Bar {
-  width: 50%;
-  margin: 50px auto;
-  text-align: center;
-  float: center; 
+body, body * {
+  font-family: 'Raleway', sans-serif;
 }
 
 #add_To_List {
@@ -61,7 +60,7 @@ body, body * {
 }
 
 .alert_css {
-  width: 70%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -70,7 +69,7 @@ body, body * {
 }
 
 tr:hover td {
-  background-color: rgb(209, 209, 209)
+  background-color: #ebebeb
 }
 
 .pointer { 
@@ -134,3 +133,41 @@ hr {
 #placeholder_Text {
   text-align: center;
 };
+
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr))
+}
+
+.content-wrap {
+  grid-column: 2/4;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 10px; 
+
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+    /* cursor: pointer; */
+}
+
+.result:hover {
+  background: #ebebeb;
+  color: black;
+}
+
+.food_Img {
+  width: 30px;
+}
