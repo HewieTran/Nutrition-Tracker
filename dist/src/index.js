@@ -117,11 +117,11 @@ searchBar.addEventListener('input', async () => {
 	// console.log(searchBar.value);
 
 	let query = searchBar.value;
-	state.search = new Search(query)
+	state.search = new Search(query);
 
 	await state.search.getResults();
 
-	let results = state.search.commonResult;
+	// let results = state.search.commonResult;
 
 	// clear previous results before display new results
 	closeResults();
