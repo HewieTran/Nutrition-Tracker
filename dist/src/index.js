@@ -110,6 +110,8 @@ class Search {
 
 };
 
+// store current selected food image
+let currentImage = '';
 
 // ***AUTOCOMPLETE***
 searchBar.addEventListener('input', async () => {
@@ -127,63 +129,79 @@ searchBar.addEventListener('input', async () => {
 	closeResults();
 
 	// display new results under input bar
-	await state.search.commonResult.slice(0, 10).forEach(res => {
-		const b = document.createElement('div');
-		b.className = 'result'
-		b.innerHTML = `${res.food_name}`;
+	if (state.search.commonResult && state.search.commonResult !== undefined) {
+		await state.search.commonResult.slice(0, 10).forEach(res => {
+			const b = document.createElement('div');
+			b.className = 'result'
+			b.innerHTML = `${res.food_name}`;
 
-		const img = document.createElement('img');
-		img.setAttribute('src', `${res.photo.thumb}`);
-		img.setAttribute('width', '40');
-		b.appendChild(img);
+			const img = document.createElement('img');
+			img.setAttribute('src', `${res.photo.thumb}`);
+			img.setAttribute('width', '40');
+			img.setAttribute('class', 'imgUrl');
+			b.appendChild(img);
 
-		autocompleteItems.appendChild(b);
-		// console.log(res.food_name)
+			autocompleteItems.appendChild(b);
 
-		b.addEventListener('click', async () => {
-			let foodName = b.textContent;
-			currentImage = document.querySelector('img').src;
-			searchBar.value = foodName;
+			// Add click down function when drop down results show
+			// document selector keydown => current active at state.search.commonResult[] // we need to add ID to each item // currentActive ++
+			// document Selector keyup => current active --
 
-			console.log(currentImage);
+			// Add adventlistener when user hit key Enter to select food
 
-			// close drop down autocomplete results 
-			closeResults();
+			b.addEventListener('click', async () => {
+				let foodName = b.textContent;
+				currentImage = b.getElementsByTagName('img')[0].src;
+				searchBar.value = foodName;
 
-			state.currentFood = new Food(foodName);
-			await state.currentFood.getNutritionData();
-			// const currentFoodImg = state.currentFood.storeImage(foodImg);
+				console.log(currentImage);
+				console.log(b);
+
+				// close drop down autocomplete results 
+				closeResults();
+
+				state.currentFood = new Food(foodName);
+				await state.currentFood.getNutritionData();
+				// const currentFoodImg = state.currentFood.storeImage(foodImg);
 
 
-			// Display current nutrition value in UI
-			selectedFoodName.innerHTML = foodName.toUpperCase();
-			foodServingSize.value = state.currentFood.servingGrams;
-			foodCalorie.innerHTML = state.currentFood.calories;
-			foodProtein.innerHTML = state.currentFood.protein;
-			foodCarbs.innerHTML = state.currentFood.carbs;
-			foodFat.innerHTML = state.currentFood.fat;
-			foodFiber.innerHTML = state.currentFood.fiber;
+				// Display current nutrition value in UI
+				selectedFoodName.innerHTML = foodName.toUpperCase();
+				foodServingSize.value = state.currentFood.servingGrams;
+				foodCalorie.innerHTML = state.currentFood.calories;
+				foodProtein.innerHTML = state.currentFood.protein;
+				foodCarbs.innerHTML = state.currentFood.carbs;
+				foodFat.innerHTML = state.currentFood.fat;
+				foodFiber.innerHTML = state.currentFood.fiber;
 
-			oldServingSize = parseFloat(foodServingSize.value);
-			oldFoodCalorie = parseFloat(foodCalorie.innerHTML);
-			oldFoodProtein = parseFloat(foodProtein.innerHTML);
-			oldFoodCarbs = parseFloat(foodCarbs.innerHTML);
-			oldFoodFat = parseFloat(foodFat.innerHTML);
-			oldFoodFiber = parseFloat(foodFiber.innerHTML);
+				oldServingSize = parseFloat(foodServingSize.value);
+				oldFoodCalorie = parseFloat(foodCalorie.innerHTML);
+				oldFoodProtein = parseFloat(foodProtein.innerHTML);
+				oldFoodCarbs = parseFloat(foodCarbs.innerHTML);
+				oldFoodFat = parseFloat(foodFat.innerHTML);
+				oldFoodFiber = parseFloat(foodFiber.innerHTML);
+			})
 		})
-	})
+	}
+
 });
 
-// store current selected food image
-let currentImage = '';
 
 // 1ST TABLE - CHANGE NUTRITION VALUE BASE ON SERVING SIZE
-changeServing.addEventListener('click', () => {
+
+let newServing = 0;
+
+foodServingSize.addEventListener('input', () => {
+
+	// Update nutrition in real-time******
+	newServing = foodServingSize.value;
+	console.log(newServing);
 
 	newServingSize = parseFloat(foodServingSize.value);
 
 	// Check if input is valid
-	if (newServingSize !== 0 && newServingSize > 0) {
+	// if (newServingSize !== 0 && newServingSize > 0) {
+	if (newServingSize) {
 
 		// Calculate new nutrition with new Serving Size
 		const newCalories = calcNewData(oldFoodCalorie, oldServingSize, newServingSize);
@@ -214,9 +232,10 @@ changeServing.addEventListener('click', () => {
 		state.currentFood.fat = newFat;
 		state.currentFood.fiber = newFiber;
 
-	} else {
-		alert('Please select a food or enter the correct number')
 	}
+	// else {
+	// 	alert('Please select a food or enter the correct number')
+	// }
 });
 
 
@@ -333,7 +352,7 @@ function calcNewData(foodNutrition, oldServingNum, newServingNum) {
 function renderWarning() {
 	const markup = `
 	<div class="alert alert_css col-md-6 alert-info alert-dismissible fade show" role="alert">
-		<strong>Holy guacamole!</strong> You should check in on some of those fields below.
+		<strong>Hang on a sec!</strong> You should search for a food first.
 		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 			<span class="remove_Btn" aria-hidden="true">&times;</span>
 		</button>
