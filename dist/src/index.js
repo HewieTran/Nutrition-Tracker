@@ -88,53 +88,124 @@ class Search {
 		this.query = query;
 	}
 	async getResults() {
-		const res = fetch(`https://trackapi.nutritionix.com/v2/search/instant?query=${this.query}`, {
-			method: 'GET',
-			headers: {
-				"x-app-id": "caa6104e",
-				"x-app-key": "1ea40dd5c9234ee38ef32d4fc7e8c2b0"
-				// "x-remote-user-id ": "0"
-				// "Content-Type" : "application/json"
-			}
-		})
-			.then(response => {
-				return response.json();
+		if (this.query !== '') {
+			const res = fetch(`https://trackapi.nutritionix.com/v2/search/instant?query=${this.query}`, {
+				method: 'GET',
+				headers: {
+					"x-app-id": "caa6104e",
+					"x-app-key": "1ea40dd5c9234ee38ef32d4fc7e8c2b0"
+					// "x-remote-user-id ": "0"
+					// "Content-Type" : "application/json"
+				}
 			})
-			.catch(error => console.log(error));
-
-		await res.then(result => {
-			this.commonResult = result.common;
-			return this.result;
-		})
+				.then(response => {
+					return response.json();
+				})
+				.catch(error => console.log(error));
+	
+			await res.then(result => {
+				this.commonResult = result.common;
+				return this.result;
+			})
+		}
 	}
-
 };
 
 // store current selected food image
 let currentImage = '';
 
+
+
 // ***AUTOCOMPLETE***
 searchBar.addEventListener('input', async () => {
 	// take query from input and search everytime it is updated
-	// console.log(searchBar.value);
-
 	let query = searchBar.value;
 	state.search = new Search(query);
-
 	await state.search.getResults();
-
-	// let results = state.search.commonResult;
 
 	// clear previous results before display new results
 	closeResults();
-
-	// display new results under input bar
 	if (state.search.commonResult && state.search.commonResult !== undefined) {
+		let currentActive = -1;
+		let a = document.getElementsByClassName('result');
+
+		document.addEventListener('keydown', e => {
+			// Down arrow key
+			if (e.keyCode == 40) {
+				currentActive++;
+				if (currentActive > 9) currentActive = 9;
+				removeActive(a);
+				addActive(a[currentActive]);
+			}
+		})
+
+		document.addEventListener('keydown', e => {
+			// Up arrow key
+			if (e.keyCode == 38) {
+				currentActive--;
+				if (currentActive < 0) currentActive = 0;
+				removeActive(a);
+				addActive(a[currentActive]);
+			}
+		})
+
+		document.addEventListener('keydown', async e => {
+			if (e.keyCode == 13 && a[currentActive]) {
+				let foodName = a[currentActive].textContent;
+				currentImage = a[currentActive].getElementsByTagName('img')[0].src;
+				searchBar.value = foodName;
+
+				// close drop down autocomplete results 
+				closeResults();
+
+				state.currentFood = new Food(foodName);
+				await state.currentFood.getNutritionData();
+
+				// Display current nutrition value in UI
+				selectedFoodName.innerHTML = foodName.toUpperCase();
+				foodServingSize.value = state.currentFood.servingGrams;
+				foodCalorie.innerHTML = state.currentFood.calories;
+				foodProtein.innerHTML = state.currentFood.protein;
+				foodCarbs.innerHTML = state.currentFood.carbs;
+				foodFat.innerHTML = state.currentFood.fat;
+				foodFiber.innerHTML = state.currentFood.fiber;
+
+				oldServingSize = parseFloat(foodServingSize.value);
+				oldFoodCalorie = parseFloat(foodCalorie.innerHTML);
+				oldFoodProtein = parseFloat(foodProtein.innerHTML);
+				oldFoodCarbs = parseFloat(foodCarbs.innerHTML);
+				oldFoodFat = parseFloat(foodFat.innerHTML);
+				oldFoodFiber = parseFloat(foodFiber.innerHTML);
+			}
+		})
+		
+		// remove and add 'active' class for element
+		function removeActive(x) {
+			if (x.length > 0) {
+				for (var i = 0; i < x.length; i++) {
+					x[i].classList.remove('active');
+				}
+			}
+		}
+
+		function addActive(a) {
+			removeActive(a);
+			if (a) a.classList.add('active');
+		}
+	}
+
+	// display new autocomplete results under input bar
+	if (state.search.commonResult && state.search.commonResult !== undefined) {
+		let id = 1;
 		await state.search.commonResult.slice(0, 10).forEach(res => {
+
+			// create drop down html element for results
 			const b = document.createElement('div');
 			b.className = 'result'
 			b.innerHTML = `${res.food_name}`;
+			b.setAttribute('id', id++);
 
+			// capture img url from results
 			const img = document.createElement('img');
 			img.setAttribute('src', `${res.photo.thumb}`);
 			img.setAttribute('width', '40');
@@ -142,12 +213,6 @@ searchBar.addEventListener('input', async () => {
 			b.appendChild(img);
 
 			autocompleteItems.appendChild(b);
-
-			// Add click down function when drop down results show
-			// document selector keydown => current active at state.search.commonResult[] // we need to add ID to each item // currentActive ++
-			// document Selector keyup => current active --
-
-			// Add adventlistener when user hit key Enter to select food
 
 			b.addEventListener('click', async () => {
 				let foodName = b.textContent;
@@ -183,7 +248,6 @@ searchBar.addEventListener('input', async () => {
 			})
 		})
 	}
-
 });
 
 
@@ -195,7 +259,6 @@ foodServingSize.addEventListener('input', () => {
 
 	// Update nutrition in real-time******
 	newServing = foodServingSize.value;
-	console.log(newServing);
 
 	newServingSize = parseFloat(foodServingSize.value);
 
@@ -231,11 +294,7 @@ foodServingSize.addEventListener('input', () => {
 		state.currentFood.carbs = newCarbs;
 		state.currentFood.fat = newFat;
 		state.currentFood.fiber = newFiber;
-
 	}
-	// else {
-	// 	alert('Please select a food or enter the correct number')
-	// }
 });
 
 
@@ -279,8 +338,6 @@ addToList.addEventListener('click', () => {
 		totalFat.innerHTML = parseFloat(fatTotal).toFixed(2);
 		totalFiber.innerHTML = parseFloat(fiberTotal).toFixed(2);
 	}
-
-
 });
 
 // 3RD TABLE - DELETE FOOD FROM LIST

@@ -165,3 +165,12 @@ hr {
 td .form-control {
   font-weight: bold;
 }
+
+div .active {
+  background: #ebebeb;
+  color: black;
+}
+
+.result {
+  background: rgb(28, 106, 209);
+}
