@@ -206,3 +206,7 @@ div .active {
 .corner-ribbon.blue{
   background: rgb(12,170,165);
 }
+
+.corner-ribbon.sticky{
+  position: fixed;
+}
