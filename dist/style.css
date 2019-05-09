@@ -174,3 +174,35 @@ div .active {
 .result {
   background: rgb(28, 106, 209);
 }
+
+.github-icon {
+  width: 20px;
+  height: 100%;
+  margin-right: 2px;
+}
+
+.corner-ribbon{
+  width: 200px;
+  background: #e43;
+  position: absolute;
+  top: 25px;
+  left: -50px;
+  text-align: center;
+  line-height: 50px;
+  letter-spacing: 1px;
+  color: #f0f0f0;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.corner-ribbon.top-right{
+  top: 25px;
+  right: -50px;
+  left: auto;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.corner-ribbon.blue{
+  background: rgb(12,170,165);
+}

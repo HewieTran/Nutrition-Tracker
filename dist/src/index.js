@@ -149,6 +149,12 @@ searchBar.addEventListener('input', async () => {
 			}
 		})
 
+		document.addEventListener('keydown', e => {
+			if(e.keyCode == 27) {
+				closeResults();
+			}
+		})
+
 		document.addEventListener('keydown', async e => {
 			if (e.keyCode == 13 && a[currentActive]) {
 				let foodName = a[currentActive].textContent;
