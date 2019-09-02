@@ -27,28 +27,6 @@ const totalFiber = document.querySelector('.total_Fiber');
 
 const placeholderText = document.querySelector('#placeholder_Text')
 
-const express = require('express');
-const app = express();
-const mongoose = require('mongoose');
-
-mongoose.connect('mongodb+srv://tranhieu07:Lyco2015!@hieu-reviews-atlas-cluster-d1jyv.mongodb.net/hieu-reviews?retryWrites=true', { useNewUrlParser: true }).then(() => {
-    console.log('Connected to Database');
-}).catch((err) => {
-    console.log('Not Connected to Database ERROR!', err);
-});
-
-const userSchema = new mongoose.Schema({
-	userName: String,
-	userPassword: String
-});
-
-const users = mongoose.model('user', userSchema);
-
-let user1 = new users({
-	name: 'Hieu Tran',
-	userPassword: 'testing'
-})
-
 
 // State to store Food and Search Model
 const state = {};
@@ -147,7 +125,6 @@ searchBar.addEventListener('input', async () => {
 
 	// clear previous results before display new results
 	closeResults();
-	
 	if (state.search.commonResult && state.search.commonResult !== undefined) {
 		let currentActive = -1;
 		let a = document.getElementsByClassName('result');
